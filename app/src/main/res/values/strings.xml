@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Manage my rounds</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_test">test</string>
+
+    <string name="access_token" translatable="false">pk.eyJ1Ijoic3RldmVuOTQxIiwiYSI6ImNqN3EzMTJwcDN0NGkzM21sYXhiMHJ0NHUifQ.U2LXySHer4QIs-uY73sabQ</string>
+    <string name="title_activity_maps">Map</string>
+</resources>
