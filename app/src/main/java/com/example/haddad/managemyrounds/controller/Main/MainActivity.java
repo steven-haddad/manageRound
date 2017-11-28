@@ -1,7 +1,10 @@
 package com.example.haddad.managemyrounds.controller.Main;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -44,14 +47,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     JSONArray jsonArrayToDates;
     int arrSize;
     ArrayList<String> postingPeriods;
-
+    private BroadcastReceiver mNetworkReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -61,9 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         getPostingPeriodsInfomations();
-
 
     }
 
@@ -153,11 +156,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     for (int i = 0; i <= arrSize; i++) {
                         try {
-                            postingPeriods.add(jsonArrayWeeks.getString(i)+"FROM"+jsonArrayFromDates.getString(i)+"TO"+jsonArrayToDates.getString(i));
+                            postingPeriods.add(jsonArrayWeeks.getString(i)+"  :"+jsonArrayFromDates.getString(i)+" - "+jsonArrayToDates.getString(i));
                             Log.i("t", String.valueOf(postingPeriods));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
+                        populateSpinnerPostingPeriods();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -181,8 +186,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void populateSpinnerPostingPeriods()  {
 
+        Spinner spinner;
+        spinner = (Spinner) findViewById(R.id.spinnerPostingPeriods) ;
 
+        spinner.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, postingPeriods));
+        java.util.ArrayList<String> strings = new java.util.ArrayList<>();
     }
-
 }
 
