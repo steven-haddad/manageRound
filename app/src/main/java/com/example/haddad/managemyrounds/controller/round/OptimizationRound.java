@@ -44,6 +44,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.mapbox.services.Constants.PRECISION_6;
+import static java.lang.Boolean.TRUE;
+
 import com.mapbox.mapboxsdk.annotations.Marker;
 
 /**
@@ -89,6 +91,8 @@ public class OptimizationRound extends AppCompatActivity implements LocationEngi
         // Setup the MapView
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
+
+
         mapView.getMapAsync(new OnMapReadyCallback() {
 
 
@@ -101,24 +105,23 @@ public class OptimizationRound extends AppCompatActivity implements LocationEngi
                         .position(new LatLng(origin.getLatitude(), origin.getLongitude()))
                         .title("Nouveau marker"));
 
+                addDestinationMarker();
+                addPointToStopsList();
+                getOptimizedRoute(stops);
+
+                enableLocationPlugin();
+
+
                 map.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(@NonNull LatLng point) {
                         // Optimization API is limited to 12 coordinate sets
-                        if (alreadyTwelveMarkersOnMap()) {
-                            Toast.makeText(OptimizationRound.this, "deja 12 markers", Toast.LENGTH_LONG).show();
-                        } else {
-                            addDestinationMarker(point);
-                            addPointToStopsList(point);
 
-                            getOptimizedRoute(stops);
                             button.setEnabled(true);
                             button.setBackgroundResource(R.color.mapboxBlue);
-                        }
+
                     }
                 });
-
-                enableLocationPlugin();
                 button = findViewById(R.id.startButton);
                 button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -126,38 +129,31 @@ public class OptimizationRound extends AppCompatActivity implements LocationEngi
                         // Pass in your Amazon Polly pool id for speech synthesis using Amazon Polly
                         // Set to null to use the default Android speech synthesizer
                         String awsPoolId = null;
-
                         boolean simulateRoute = true;
-
-                        NavigationLauncher.startNavigation(OptimizationRound.this, optimizedRoute, null, false);
-
+                        NavigationLauncher.startNavigation(OptimizationRound.this, optimizedRoute, null, true);
                         DirectionsRoute  op=optimizedRoute;
-
                         Log.i("te","d"+op);
-
-
                     }
                 });
             }
         });
     }
 
-    private boolean alreadyTwelveMarkersOnMap() {
-        if (stops.size() == 12) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
-    private void addDestinationMarker(LatLng point) {
+
+    private void addDestinationMarker() {
         map.addMarker(new MarkerOptions()
-                .position(new LatLng(point.getLatitude(), point.getLongitude()))
+                .position(new LatLng(48.8143782,2.4579538999999997))
+                .title("ajout d'un marker"));
+
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(48.997347,2.378492999999935))
                 .title("ajout d'un marker"));
     }
 
-    private void addPointToStopsList(LatLng point) {
-        stops.add(Position.fromCoordinates(point.getLongitude(), point.getLatitude()));
+    private void addPointToStopsList() {
+        stops.add(Position.fromCoordinates(2.4579538999999997, 48.8143782));
+        stops.add(Position.fromCoordinates(2.378492999999935, 48.997347));
     }
 
     private void initializeListOfStops() {
@@ -172,10 +168,13 @@ public class OptimizationRound extends AppCompatActivity implements LocationEngi
         optimizedClient = new MapboxOptimizedTrips.Builder()
                 .setSource(FIRST)
                 .setDestination(ANY)
+                .setSteps(TRUE)
+                .setLanguage("French")
                 .setCoordinates(coordinates)
                 .setOverview(DirectionsCriteria.OVERVIEW_FULL)
                 .setProfile(DirectionsCriteria.PROFILE_DRIVING)
                 .setAccessToken(Mapbox.getAccessToken())
+                
                 .build();
 
         optimizedClient.enqueueCall(new Callback<OptimizedTripsResponse>() {
@@ -198,7 +197,10 @@ public class OptimizationRound extends AppCompatActivity implements LocationEngi
                 // Get most optimized route from API response
                 optimizedRoute = response.body().getTrips().get(0);
                 drawOptimizedRoute(optimizedRoute);
-            }
+                 optimizedRoute.getLegs();
+                double distance = optimizedRoute.getDistance();
+                Log.i("d","r"+distance);
+        }
 
             @Override
             public void onFailure(Call<OptimizedTripsResponse> call, Throwable throwable) {
