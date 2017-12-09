@@ -3,7 +3,7 @@ package com.example.haddad.managemyrounds.model;
 
 import java.util.List;
 
-public class Round {
+public class Furniture {
 
     private String postingDay;
     private String numberOfFaces;
@@ -12,7 +12,7 @@ public class Round {
 
 
 
-    public Round(String postingDay,String numberOfFaces,String region,String furnCode ) {
+    public Furniture(String postingDay, String numberOfFaces, String region, String furnCode ) {
         this.postingDay = postingDay;;
         this.numberOfFaces=numberOfFaces;
         this.region=region;

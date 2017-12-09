@@ -2,14 +2,10 @@ package com.example.haddad.managemyrounds.controller.Main;
 
 import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.location.Location;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -27,7 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.haddad.managemyrounds.R;
-import com.example.haddad.managemyrounds.controller.round.DisplayRoundsInformation;
+import com.example.haddad.managemyrounds.controller.round.DisplayFurnituresInformation;
 import com.example.haddad.managemyrounds.controller.round.OptimizationRound;
 import com.example.haddad.managemyrounds.singleton.AppSingleton;
 
@@ -48,6 +46,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     int arrSize;
     ArrayList<String> postingPeriods;
     private BroadcastReceiver mNetworkReceiver;
+    Spinner spinner ;
+    String selectedPeriod;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,9 +67,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        getPostingPeriodsInfomations();
 
-    }
+}
 
     @Override
     public void onBackPressed() {
@@ -114,83 +114,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_gallery:
 
-                Intent navigationRoute = new Intent(MainActivity.this, DisplayRoundsInformation.class);
+                Intent navigationRoute = new Intent(MainActivity.this, DisplayFurnituresInformation.class);
                 startActivity(navigationRoute);
                 break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
 
-    private void showFragment(Fragment fragment) {
+    }
+   /* private void showFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_main, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
-    }
+    }*/
 
-    private void getPostingPeriodsInfomations() {
+    public void launchDisplayRoundsFurniture(View v){
 
-        String cancel_req_tag = "Posting Periods";
-        String URL_API_REST_DISPLAY_POSTING_PERIODS = "http://managemyround.livehost.fr/JSON/getAllValidPostingPeriods.php";
-        Log.e("Url", URL_API_REST_DISPLAY_POSTING_PERIODS);
-        StringRequest strReq = new StringRequest(Request.Method.GET,
-                URL_API_REST_DISPLAY_POSTING_PERIODS, new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "Register Response: " + response.toString());
-
-                try {
-                    JSONObject o = new JSONObject(response);
-
-                    jsonArrayWeeks = o.getJSONArray("week");
-                    jsonArrayFromDates = o.getJSONArray("from_date");
-                    jsonArrayToDates = o.getJSONArray("to_date");
-
-                    arrSize = jsonArrayWeeks.length();
-                    postingPeriods = new ArrayList<String>();
+        SharedPreferences myPrefs = this.getSharedPreferences("selectedPeriod", MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = myPrefs.edit();
+        prefsEditor.putString("selectedPeriod", selectedPeriod);
+        prefsEditor.commit();
 
 
-                    for (int i = 0; i <= arrSize; i++) {
-                        try {
-                            postingPeriods.add(jsonArrayWeeks.getString(i)+"  :"+jsonArrayFromDates.getString(i)+" - "+jsonArrayToDates.getString(i));
-                            Log.i("t", String.valueOf(postingPeriods));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        populateSpinnerPostingPeriods();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Login Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        })
-        {
-        };
-        // Adding request to request queue
-
-        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(strReq, cancel_req_tag);
+        Intent displayRoundsFurnitures= new Intent(MainActivity.this, DisplayFurnituresInformation.class);
+        startActivity(displayRoundsFurnitures);
     }
 
 
-    private void populateSpinnerPostingPeriods()  {
 
-        Spinner spinner;
-        spinner = (Spinner) findViewById(R.id.spinnerPostingPeriods) ;
 
-        spinner.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, postingPeriods));
-        java.util.ArrayList<String> strings = new java.util.ArrayList<>();
-    }
 }
 

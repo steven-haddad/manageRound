@@ -1,5 +1,6 @@
 package com.example.haddad.managemyrounds.controller.round;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -10,7 +11,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.example.haddad.managemyrounds.R;
+import com.example.haddad.managemyrounds.singleton.AppSingleton;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.Polyline;
@@ -37,7 +42,9 @@ import com.mapbox.services.commons.geojson.LineString;
 import com.mapbox.services.commons.models.Position;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,6 +54,10 @@ import static com.mapbox.services.Constants.PRECISION_6;
 import static java.lang.Boolean.TRUE;
 
 import com.mapbox.mapboxsdk.annotations.Marker;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Use Mapbox Android Services to request and compare normal directions with time optimized directions.
@@ -72,6 +83,11 @@ public class OptimizationRound extends AppCompatActivity implements LocationEngi
     private LatLng destinationCoord;
     private Location originLocation;
     private Button button;
+    private static final String TAG = "DisplayFacesCoordinates";
+    JSONArray latitude;
+    JSONArray longitude;
+    int arrSize;
+    String selectedPeriod;
 
 
     @Override
@@ -86,6 +102,8 @@ public class OptimizationRound extends AppCompatActivity implements LocationEngi
         setContentView(R.layout.activity_test);
 
         // Initialize list of Position objects and add the origin Position to the list
+        getPostingPeriod();
+        getFacesCoordinates();
         initializeListOfStops();
 
         // Setup the MapView
@@ -105,9 +123,9 @@ public class OptimizationRound extends AppCompatActivity implements LocationEngi
                         .position(new LatLng(origin.getLatitude(), origin.getLongitude()))
                         .title("Nouveau marker"));
 
-                addDestinationMarker();
-                addPointToStopsList();
-                getOptimizedRoute(stops);
+                    addDestinationMarker();
+                    addPointToStopsList();
+                    getOptimizedRoute(stops);
 
                 enableLocationPlugin();
 
@@ -130,7 +148,7 @@ public class OptimizationRound extends AppCompatActivity implements LocationEngi
                         // Set to null to use the default Android speech synthesizer
                         String awsPoolId = null;
                         boolean simulateRoute = true;
-                        NavigationLauncher.startNavigation(OptimizationRound.this, optimizedRoute, null, true);
+                        NavigationLauncher.startNavigation(OptimizationRound.this, optimizedRoute, null, false);
                         DirectionsRoute  op=optimizedRoute;
                         Log.i("te","d"+op);
                     }
@@ -141,19 +159,33 @@ public class OptimizationRound extends AppCompatActivity implements LocationEngi
 
 
 
-    private void addDestinationMarker() {
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(48.8143782,2.4579538999999997))
-                .title("ajout d'un marker"));
+    private void addDestinationMarker()  {
 
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(48.997347,2.378492999999935))
-                .title("ajout d'un marker"));
+        for(int i=0;i<arrSize;i++) {
+
+            try {
+                map.addMarker(new MarkerOptions()
+                        .position(new LatLng(latitude.getDouble(i),longitude.getDouble(i)))
+                        .title("ajout d'un marker"+i));
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
-    private void addPointToStopsList() {
-        stops.add(Position.fromCoordinates(2.4579538999999997, 48.8143782));
-        stops.add(Position.fromCoordinates(2.378492999999935, 48.997347));
+    private void addPointToStopsList()  {
+
+        for(int i=0;i<arrSize;i++) {
+
+            try {
+                stops.add(Position.fromCoordinates(longitude.getDouble(i), latitude.getDouble(i)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void initializeListOfStops() {
@@ -174,7 +206,7 @@ public class OptimizationRound extends AppCompatActivity implements LocationEngi
                 .setOverview(DirectionsCriteria.OVERVIEW_FULL)
                 .setProfile(DirectionsCriteria.PROFILE_DRIVING)
                 .setAccessToken(Mapbox.getAccessToken())
-                
+
                 .build();
 
         optimizedClient.enqueueCall(new Callback<OptimizedTripsResponse>() {
@@ -363,6 +395,66 @@ public class OptimizationRound extends AppCompatActivity implements LocationEngi
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
+
+    private void getFacesCoordinates() {
+
+        String cancel_req_tag = "FACE";
+        String URL_API_REST_DISPLAY_FACE = "http://managemyround.livehost.fr/JSON/getFacesCoordinates.php?selectedPeriod=" +selectedPeriod;
+        Log.e("Url", URL_API_REST_DISPLAY_FACE);
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                URL_API_REST_DISPLAY_FACE, new com.android.volley.Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Register Response: " + response.toString());
+
+                try {
+                    JSONObject o = new JSONObject(response);
+
+                    latitude = o.getJSONArray("latitude");
+                    longitude= o.getJSONArray("longitude");
+                    arrSize=latitude.length();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Login Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        })
+
+        {
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting params to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("selectedPeriod", selectedPeriod);
+                return params;
+
+            }
+
+        };
+        // Adding request to request queue
+        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(strReq, cancel_req_tag);
+    }
+
+
+    public void getPostingPeriod() {
+
+        SharedPreferences myPrefs = this.getSharedPreferences("selectedPeriod", MODE_PRIVATE);
+        selectedPeriod = myPrefs.getString("selectedPeriod", null);
+
+        String test=selectedPeriod;
+
+    }
+
+
+
 }
 
 

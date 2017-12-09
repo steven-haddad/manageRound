@@ -48,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:width="200dp"
+        android:onClick="launchDisplayRoundsFurniture"
         android:text="Search"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"

@@ -4,7 +4,7 @@ package com.example.haddad.managemyrounds.model;
  * Created by haddad on 09/11/17.
  */
 
-public class FurnitureDetail {
+public class Face {
 
     private String faceCode;
     private String newDesignImage;
@@ -12,15 +12,17 @@ public class FurnitureDetail {
     private String newDesignName;
     private String oldDesignName;
     private String roundFurnCode;
+    private String adress;
 
 
-    public FurnitureDetail(String faceCode, String newDesignImage, String oldDesignImage,String roundFurnCode,String newDesignName,String oldDesignName) {
+    public Face(String faceCode, String newDesignImage, String oldDesignImage, String roundFurnCode, String newDesignName, String oldDesignName) {
         this.faceCode = faceCode;
         this.newDesignImage = newDesignImage;
         this.oldDesignImage = oldDesignImage;
         this.roundFurnCode= roundFurnCode;
         this.newDesignName=newDesignName;
         this.oldDesignName=oldDesignName;
+
     }
 
     public String getNewDesignName() {

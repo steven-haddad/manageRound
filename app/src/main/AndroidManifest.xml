@@ -65,7 +65,7 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".navigation" />
-        <activity android:name=".controller.round.DisplayRoundsInformation"></activity>
+        <activity android:name=".controller.round.DisplayFurnituresInformation"></activity>
         <activity android:name=".controller.round.DisplayFacesInformations"></activity>
 
 

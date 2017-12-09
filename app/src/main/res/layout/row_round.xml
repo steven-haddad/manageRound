@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#c4478ca1"
-    android:focusable="auto"
     android:listSelector="@android:color/holo_red_light"
-
-    android:onClick="launchDisplayFacesActivity"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    >
 
     <TextView
         android:id="@+id/postingDay"
@@ -16,7 +16,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:onClick="launchDisplayFacesActivity"
         android:textColor="@android:color/black"
         android:textStyle="bold"
         tools:text="Posting day" />

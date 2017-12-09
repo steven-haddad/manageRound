@@ -1,10 +1,10 @@
 package com.example.haddad.managemyrounds.controller.round;
 
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -13,23 +13,17 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.bumptech.glide.Glide;
 import com.example.haddad.managemyrounds.R;
 import com.example.haddad.managemyrounds.adapter.FacesListAdapter;
-import com.example.haddad.managemyrounds.adapter.RoundListAdapter;
-import com.example.haddad.managemyrounds.model.FurnitureDetail;
-import com.example.haddad.managemyrounds.model.Round;
+import com.example.haddad.managemyrounds.model.Face;
 import com.example.haddad.managemyrounds.singleton.AppSingleton;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +37,7 @@ public class DisplayFacesInformations extends AppCompatActivity {
     String test;
     private ImageView newDesign;
     int arrSize;
+    String selectedPeriod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,34 +45,36 @@ public class DisplayFacesInformations extends AppCompatActivity {
         setContentView(R.layout.activity_display_faces_informations);
         mListView = (ListView) findViewById(R.id.listView);
 
+        getPostingPeriod();
+
         Bundle bundle = getIntent().getExtras();
 
-         String roundFurnCode = bundle.getString("roundFurnCode");
+        String roundFurnCode = bundle.getString("roundFurnCode");
         getFacesInfomations(String.valueOf(roundFurnCode));
 
     }
 
-    private List<FurnitureDetail> genererFaces() throws JSONException {
+    private List<Face> genererFaces() throws JSONException {
 
         // Tag used to cancel the request
-        final List<FurnitureDetail> furnitureDetails = new ArrayList<FurnitureDetail>();
+        final List<Face> faces = new ArrayList<Face>();
         for (int i = 0; i < arrSize; ++i) {
-            furnitureDetails.add(new FurnitureDetail(jsonArrayFaceCode.getString(i),jsonArrayNewImageUrl.getString(i),jsonArrayOldImageUrl.getString(i), "s", "s0", "s2"));
+            faces.add(new Face(jsonArrayFaceCode.getString(i),jsonArrayNewImageUrl.getString(i),jsonArrayOldImageUrl.getString(i), "s", "s0", "s2"));
         }
-        return furnitureDetails;
+        return faces;
     }
 
 
     private void afficherListeFaces() {
 
-        List<FurnitureDetail> furnitureDetails = null;
+        List<Face> faces = null;
         try {
-            furnitureDetails = genererFaces();
+            faces = genererFaces();
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        FacesListAdapter adapter = new FacesListAdapter(DisplayFacesInformations.this, furnitureDetails);
+        FacesListAdapter adapter = new FacesListAdapter(DisplayFacesInformations.this, faces);
             mListView.setAdapter(adapter);
 
     }
@@ -134,5 +131,12 @@ public class DisplayFacesInformations extends AppCompatActivity {
         };
         // Adding request to request queue
         AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(strReq, cancel_req_tag);
+    }
+
+    public void getPostingPeriod() {
+
+        SharedPreferences myPrefs = this.getSharedPreferences("selectedPeriod", MODE_PRIVATE);
+        selectedPeriod = myPrefs.getString("selectedPeriod", null);
+
     }
 }
