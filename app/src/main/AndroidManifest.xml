@@ -3,16 +3,13 @@
     package="com.example.haddad.managemyrounds">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <permission
         android:name="com.example.mapexdemo.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
     <service android:name="com.mapbox.mapboxsdk.telemetry.TelemetryService" />
-
-
-
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -65,19 +62,17 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".navigation" />
-        <activity android:name=".controller.round.DisplayFurnituresInformation"></activity>
-        <activity android:name=".controller.round.DisplayFacesInformations"></activity>
-
+        <activity android:name=".controller.round.DisplayFurnituresInformation" />
+        <activity android:name=".controller.round.DisplayFacesInformations" />
 
         <receiver
-            android:name="com.example.haddad.managemyrounds.receiver.NetworkChangeReceiver"
-            android:label="NetworkChangeReceiver" >
+            android:name=".receiver.NetworkChangeReceiver"
+            android:label="NetworkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
         </receiver>
-
 
     </application>
 

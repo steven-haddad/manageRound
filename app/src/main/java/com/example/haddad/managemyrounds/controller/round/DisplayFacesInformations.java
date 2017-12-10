@@ -39,6 +39,7 @@ public class DisplayFacesInformations extends AppCompatActivity {
     int arrSize;
     String selectedPeriod;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

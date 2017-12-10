@@ -4,9 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +28,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.haddad.managemyrounds.R;
+import com.example.haddad.managemyrounds.adapter.ViewPagerAdapter;
+import com.example.haddad.managemyrounds.controller.fragment.displayFurnituresFragment;
 import com.example.haddad.managemyrounds.controller.round.DisplayFurnituresInformation;
 import com.example.haddad.managemyrounds.controller.round.OptimizationRound;
 import com.example.haddad.managemyrounds.singleton.AppSingleton;
@@ -37,17 +42,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "DisplayPostingPeriods";
-    Location latitude;
-    Location longitude;
-    JSONArray jsonArrayWeeks;
-    JSONArray jsonArrayFromDates;
-    JSONArray jsonArrayToDates;
-    int arrSize;
-    ArrayList<String> postingPeriods;
-    private BroadcastReceiver mNetworkReceiver;
-    Spinner spinner ;
-    String selectedPeriod;
+    private ViewPager mViewPager;
+    private Toolbar mToolbar;
+    private ViewPagerAdapter mViewPagerAdapter;
+    private TabLayout mTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setViewPager();
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -131,18 +130,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
     }*/
 
-    public void launchDisplayRoundsFurniture(View v){
 
-        SharedPreferences myPrefs = this.getSharedPreferences("selectedPeriod", MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = myPrefs.edit();
-        prefsEditor.putString("selectedPeriod", selectedPeriod);
-        prefsEditor.commit();
+    private void setViewPager() {
 
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mViewPagerAdapter);
 
-        Intent displayRoundsFurnitures= new Intent(MainActivity.this, DisplayFurnituresInformation.class);
-        startActivity(displayRoundsFurnitures);
+        mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        mTabLayout.setupWithViewPager(mViewPager);
     }
-
 
 
 

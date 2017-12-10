@@ -12,4 +12,10 @@
 
     <string name="access_token" translatable="false">pk.eyJ1Ijoic3RldmVuOTQxIiwiYSI6ImNqN3EzMTJwcDN0NGkzM21sYXhiMHJ0NHUifQ.U2LXySHer4QIs-uY73sabQ</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <declare-styleable name="FragmentArguments">
+        <attr name="android:label" />
+    </declare-styleable>
 </resources>
