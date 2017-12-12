@@ -3,7 +3,11 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
+    <FrameLayout
+        android:id="@+id/mainframe"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        >
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
@@ -22,7 +26,7 @@
         app:srcCompat="@drawable/mapbox_marker_icon_default" />
 
 
-
+</FrameLayout>
 
 
 
