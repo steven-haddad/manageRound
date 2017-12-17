@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -17,6 +19,8 @@ import com.example.haddad.managemyrounds.controller.round.DisplayFurnituresInfor
 import com.example.haddad.managemyrounds.model.Furniture;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FurnitureListAdapter extends ArrayAdapter<Furniture> {
 
@@ -45,6 +49,7 @@ public class FurnitureListAdapter extends ArrayAdapter<Furniture> {
             viewHolder.region = (TextView) convertView.findViewById(R.id.region);
             viewHolder.furnCode = (TextView) convertView.findViewById(R.id.idFurniture);
             viewHolder.selectedPeriod=(Spinner)convertView.findViewById(R.id.spinnerPostingPeriod);
+            viewHolder.validate=(CircleImageView) convertView.findViewById(R.id.imageButtonValidation);
             convertView.setTag(viewHolder);
 
 
@@ -58,6 +63,7 @@ public class FurnitureListAdapter extends ArrayAdapter<Furniture> {
         viewHolder.numberOfFaces.setText(String.valueOf(furniture.getnumberOfFaces()));
         viewHolder.region.setText(furniture.getRegion());
         viewHolder.furnCode.setText(String.valueOf(furniture.getFurnCode()));
+        viewHolder.validate.setImageResource(R.mipmap.validation_icon);
 
         return convertView;
     }
@@ -69,6 +75,7 @@ public class FurnitureListAdapter extends ArrayAdapter<Furniture> {
         private TextView furnCode;
         private Spinner selectedPeriod;
 
+        private ImageView validate;
 
 
 }

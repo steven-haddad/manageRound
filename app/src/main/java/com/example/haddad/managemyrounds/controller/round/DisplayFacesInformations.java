@@ -38,7 +38,7 @@ public class DisplayFacesInformations extends AppCompatActivity {
     private ImageView newDesign;
     int arrSize;
     String selectedPeriod;
-
+    ArrayList<String> roundFurnCode = new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +46,13 @@ public class DisplayFacesInformations extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.listView);
 
         getPostingPeriod();
-
         Bundle bundle = getIntent().getExtras();
+        roundFurnCode = bundle.getStringArrayList("roundFurnCode");
 
-        String roundFurnCode = bundle.getString("roundFurnCode");
+        for(int j=0;j<roundFurnCode.size();j++){
+            Log.i("RoundFurnCode",roundFurnCode.get(j));
+        }
         getFacesInfomations(String.valueOf(roundFurnCode));
-
     }
 
     private List<Face> genererFaces() throws JSONException {
@@ -83,9 +84,9 @@ public class DisplayFacesInformations extends AppCompatActivity {
     private void getFacesInfomations(final String roundFurnCode){
 
         String cancel_req_tag = "FACE";
-        String URL_API_REST_DISPLAY_FACE = "http://managemyround.livehost.fr/JSON/retrieveAllFacesByFurnitures.php?roundFurnCode=" + roundFurnCode;
+        String URL_API_REST_DISPLAY_FACE = "http://managemyround.livehost.fr/JSON/retrieveAllFacesByFurnitures.php";
         Log.e("Url", URL_API_REST_DISPLAY_FACE);
-        StringRequest strReq = new StringRequest(Request.Method.GET,
+        StringRequest strReq = new StringRequest(Request.Method.POST,
                 URL_API_REST_DISPLAY_FACE, new Response.Listener<String>() {
 
             @Override

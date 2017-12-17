@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#c4478ca1"
+    android:background="#f94c495b"
     android:listSelector="@android:color/holo_red_light"
     android:padding="10dp"
     android:focusable="false"
     android:focusableInTouchMode="false"
+    android:id="@+id/relativeLayoutRowRound"
     >
 
     <TextView
@@ -16,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textStyle="bold"
         tools:text="Posting day" />
 
@@ -27,7 +29,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/postingDay"
         android:text="id furniture"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/white" />
 
     <TextView
         android:id="@+id/region"
@@ -35,7 +37,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/idFurniture"
-        android:text="Region" />
+        android:text="Region"
+        android:textColor="@android:color/white"
+        />
 
     <TextView
         android:id="@+id/faceNumber"
@@ -43,6 +47,20 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/region"
-        android:text="Nombre de faces" />
+        android:text="Nombre de faces"
+        android:textColor="@android:color/white"
+        />
+
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+
+        android:id="@+id/imageButtonValidation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/faceNumber"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/idFurniture"
+        android:layout_marginEnd="88dp"
+        android:visibility="invisible"
+        app:civ_border_color="#00949494" />
 
 </RelativeLayout>

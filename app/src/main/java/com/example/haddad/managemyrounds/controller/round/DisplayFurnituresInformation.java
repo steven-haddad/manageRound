@@ -4,12 +4,24 @@ package com.example.haddad.managemyrounds.controller.round;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +32,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.haddad.managemyrounds.R;
 import com.example.haddad.managemyrounds.adapter.FurnitureListAdapter;
+import com.example.haddad.managemyrounds.controller.Main.MainActivity;
 import com.example.haddad.managemyrounds.model.Furniture;
 import com.example.haddad.managemyrounds.singleton.AppSingleton;
 
@@ -29,12 +42,16 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-public class DisplayFurnituresInformation extends Activity {
+import de.hdodenhof.circleimageview.CircleImageView;
 
-    private static final String TAG = "DisplayFurnitures";
+public class DisplayFurnituresInformation extends MainActivity{
+
+        private static final String TAG = "DisplayFurnitures";
     ListView mListView;
 
     // Posting period json
@@ -53,6 +70,10 @@ public class DisplayFurnituresInformation extends Activity {
     JSONArray jsonArrayPostingDay;
     int arrSizeFurniture;
 
+    //Send the furnitures selected
+    ArrayList<String> listIdFurnitures =  new ArrayList<String>();
+    TextView idFurniture;
+
 
 
     @Override
@@ -63,6 +84,7 @@ public class DisplayFurnituresInformation extends Activity {
 
         mListView = (ListView) findViewById(R.id.listViewRound);
         spinnerPostingPeriods = (Spinner) findViewById(R.id.spinnerPostingPeriod) ;
+
 
         // GET POSTING PERIOD
         getPostingPeriodsInfomations();
@@ -75,6 +97,7 @@ public class DisplayFurnituresInformation extends Activity {
         spinnerPostingPeriods.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
                 String selected = adapterView.getItemAtPosition(i).toString();
                 String[] periods=selected.split(" ");
                 selectedPeriod=periods[0];
@@ -90,23 +113,31 @@ public class DisplayFurnituresInformation extends Activity {
 
         getPostingPeriodsInfomations();
 
-            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL); // Important
+
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                TextView idFurniture = (TextView) view.findViewById(R.id.idFurniture);
-                String stringIdFurniture = idFurniture.getText().toString();
+                RelativeLayout relativeLayout= (RelativeLayout) view.findViewById(R.id.relativeLayoutRowRound);
+                relativeLayout.setBackgroundColor(Color.parseColor("#FF81879F"));
+                idFurniture = (TextView) view.findViewById(R.id.idFurniture);
 
+
+                ColorDrawable viewColor = (ColorDrawable) relativeLayout.getBackground();
+                int colorId = viewColor.getColor();
+                System.out.print((colorId));
+
+                listIdFurnitures.add(idFurniture.getText().toString());
+/*
                 Intent intentDisplayFaces = new Intent(DisplayFurnituresInformation.this, DisplayFacesInformations.class);
-                intentDisplayFaces.putExtra("roundFurnCode", stringIdFurniture);
-                startActivity(intentDisplayFaces );
-            }
-
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                //No event
+                intentDisplayFaces.putExtra("roundFurnCode", idFurniture.getText().toString());
+                startActivity(intentDisplayFaces );*/
             }
         });
+
 
     }
 
@@ -258,5 +289,69 @@ public class DisplayFurnituresInformation extends Activity {
 
         prefsEditor.commit();
     }
-}
 
+    public void intentActivitiDisplayFaces(View v){
+        Intent intentDisplayFaces = new Intent(DisplayFurnituresInformation.this, DisplayFacesInformations.class);
+        intentDisplayFaces.putExtra("roundFurnCode", listIdFurnitures);
+        startActivity(intentDisplayFaces );
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.nav_displayRounds:
+
+
+            case R.id.nav_gallery:
+
+
+
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+
+    }
+
+
+
+
+
+
+
+
+}

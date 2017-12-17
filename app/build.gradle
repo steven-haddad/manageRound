@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.OptimizationRound.runner.AndroidJUnitRunner"
+        multiDexEnabled  true
     }
     buildTypes {
         release {
@@ -47,6 +48,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.android.support:percent:26.1.0'
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support:multidex:1.0.0'
 
 }
 
